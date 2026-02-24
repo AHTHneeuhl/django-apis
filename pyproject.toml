@@ -1,7 +1,7 @@
 [project]
 name = "django-apis"
 version = "0.1.0"
-description = "Add your description here"
+description = "Multiple Django Rest APIs and Projects"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
