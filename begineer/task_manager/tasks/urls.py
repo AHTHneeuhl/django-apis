@@ -1,5 +1,11 @@
-from django.urls import path
+"""
+URL configuration for Task API.
+"""
 
-urlpatterns = [
-    # Task endpoints will go here
-]
+from rest_framework.routers import DefaultRouter
+from .views import TaskViewSet
+
+router = DefaultRouter()
+router.register(r"", TaskViewSet, basename="tasks")
+
+urlpatterns = router.urls
