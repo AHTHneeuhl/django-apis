@@ -1,0 +1,64 @@
+# ===============================
+# Python
+# ===============================
+__pycache__/
+*.py[cod]
+*$py.class
+
+# ===============================
+# Virtual Environments
+# ===============================
+.venv/
+venv/
+env/
+
+# ===============================
+# uv
+# ===============================
+# Keep uv.lock tracked for reproducibility
+# DO NOT ignore uv.lock
+# Ignore local uv cache if exists
+.uv/
+
+# ===============================
+# Django
+# ===============================
+*.log
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+
+# ===============================
+# Environment Variables
+# ===============================
+.env
+.env.*
+
+# ===============================
+# IDEs
+# ===============================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ===============================
+# OS Files
+# ===============================
+.DS_Store
+Thumbs.db
+
+# ===============================
+# Testing / Coverage
+# ===============================
+.coverage
+htmlcov/
+.pytest_cache/
+
+# ===============================
+# Migrations (Optional)
+# ===============================
+# Uncomment if you want to ignore migrations
+# */migrations/*
+# !*/migrations/__init__.py
