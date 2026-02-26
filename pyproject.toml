@@ -3,7 +3,7 @@ name = "django-apis"
 version = "0.1.0"
 description = "Multiple Django Rest APIs and Projects"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.12"
 dependencies = [
     "asgiref==3.11.1",
     "attrs==25.4.0",
@@ -18,7 +18,9 @@ dependencies = [
     "jsonschema==4.26.0",
     "jsonschema-specifications==2025.9.1",
     "packaging==26.0",
+    "psycopg2-binary>=2.9.11",
     "pyjwt==2.11.0",
+    "python-decouple>=3.8",
     "python-dotenv==1.2.1",
     "pyyaml==6.0.3",
     "referencing==0.37.0",
