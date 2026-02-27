@@ -1,5 +1,7 @@
 from rest_framework import generics, permissions
 from rest_framework.exceptions import PermissionDenied
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import OrderingFilter
 from .models import Application
 from .serializers import (
     ApplicantApplicationCreateSerializer,
@@ -31,6 +33,15 @@ class MyApplicationsView(generics.ListAPIView):
 class JobApplicationsView(generics.ListAPIView):
     serializer_class = CompanyApplicationListSerializer
     permission_classes = [permissions.IsAuthenticated, IsCompany]
+
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
+
+    # Filtering
+    filterset_fields = ["status"]
+
+    # Ordering
+    ordering_fields = ["applied_at", "status"]
+    ordering = ["-applied_at"]
 
     def get_queryset(self):
         job_id = self.kwargs["job_id"]
