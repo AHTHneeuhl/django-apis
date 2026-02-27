@@ -49,6 +49,8 @@ packaging==26.0
     # via
     #   django-apis (pyproject.toml)
     #   gunicorn
+pillow==12.1.1
+    # via django-apis (pyproject.toml)
 psycopg2-binary==2.9.11
     # via django-apis (pyproject.toml)
 pyjwt==2.11.0

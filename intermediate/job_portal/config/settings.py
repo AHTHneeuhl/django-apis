@@ -151,3 +151,11 @@ SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 }
+
+# -------------------------------
+# Media Files Configuration
+# -------------------------------
+# This is used to store uploaded files like company logos
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
