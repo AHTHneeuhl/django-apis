@@ -181,12 +181,14 @@ SIMPLE_JWT = {
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
+
 # DRF Spectacular settings
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Job Portal API',
     'DESCRIPTION': 'Backend API for Job & Internship Portal',
     'VERSION': '1.0.0',
 }
+
 
 # Redis
 CACHES = {
@@ -200,3 +202,9 @@ CACHES = {
 }
 
 CACHE_TTL = 60 * 5
+
+
+# Celery
+CELERY_BROKER_URL = "redis://localhost:6379/0"
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
