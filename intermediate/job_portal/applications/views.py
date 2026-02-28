@@ -3,6 +3,7 @@ from rest_framework.exceptions import PermissionDenied
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
 from .models import Application
+from applications.tasks import send_application_email
 from .serializers import (
     ApplicantApplicationCreateSerializer,
     ApplicantApplicationListSerializer,
@@ -16,6 +17,12 @@ from .permissions import IsApplicant, IsCompany
 class ApplicationCreateView(generics.CreateAPIView):
     serializer_class = ApplicantApplicationCreateSerializer
     permission_classes = [permissions.IsAuthenticated, IsApplicant]
+
+    send_application_email.delay(
+    company_email=job.company.owner.email,
+    job_title=job.title,
+    candidate_email=request.user.email,
+)
 
 
 # Applicant → View own applications
