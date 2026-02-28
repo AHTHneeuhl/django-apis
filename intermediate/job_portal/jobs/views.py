@@ -1,3 +1,6 @@
+from django.core.cache import cache
+from django.conf import settings
+from utils.cache import generate_cache_key
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -69,6 +72,44 @@ class JobListView(generics.ListAPIView):
     ]
 
     ordering = ["-created_at"]
+
+    def list(self, request, *args, **kwargs):
+        """
+        Override list method to implement query-aware caching.
+        """
+
+        # Generate unique cache key based on query params
+        cache_key = generate_cache_key("job_list", request)
+
+        cached_response = cache.get(cache_key)
+        if cached_response:
+            return Response(cached_response)
+
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            paginated_response = self.get_paginated_response(serializer.data)
+
+            # Store only response data (not Response object)
+            cache.set(
+                cache_key,
+                paginated_response.data,
+                timeout=settings.CACHE_TTL,
+            )
+
+            return paginated_response
+
+        serializer = self.get_serializer(queryset, many=True)
+
+        cache.set(
+            cache_key,
+            serializer.data,
+            timeout=settings.CACHE_TTL,
+        )
+
+        return Response(serializer.data)
 
 
 class JobSearchView(APIView):
