@@ -19,6 +19,7 @@ django==6.0.2
     #   django-apis (pyproject.toml)
     #   django-cors-headers
     #   django-filter
+    #   django-redis
     #   djangorestframework
     #   djangorestframework-simplejwt
     #   drf-spectacular
@@ -27,6 +28,8 @@ django-cors-headers==4.9.0
 django-elasticsearch-dsl==9.0
     # via django-apis (pyproject.toml)
 django-filter==25.2
+    # via django-apis (pyproject.toml)
+django-redis==6.0.0
     # via django-apis (pyproject.toml)
 djangorestframework==3.16.1
     # via
@@ -79,6 +82,8 @@ pyyaml==6.0.3
     # via
     #   django-apis (pyproject.toml)
     #   drf-spectacular
+redis==7.2.1
+    # via django-redis
 referencing==0.37.0
     # via
     #   django-apis (pyproject.toml)
