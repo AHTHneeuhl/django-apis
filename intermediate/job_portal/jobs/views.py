@@ -36,3 +36,32 @@ class JobDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Job.objects.all()
     serializer_class = JobSerializer
     permission_classes = [IsAuthenticated, IsCompanyOwner]
+
+
+class JobListView(generics.ListAPIView):
+    """
+    Public job listing with advanced search, filtering, and ordering.
+    """
+
+    serializer_class = JobSerializer
+    queryset = Job.objects.filter(is_active=True).select_related("company")
+
+    # Enable filter backends
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+
+    # Custom filter class
+    filterset_class = JobFilter
+
+    # Search functionality
+    search_fields = [
+        "title",
+        "company__name",
+    ]
+
+    # Ordering options
+    ordering_fields = [
+        "created_at",
+        "salary_min",
+    ]
+
+    ordering = ["-created_at"]
