@@ -1,9 +1,12 @@
 from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Job
 from .serializers import JobSerializer
 from .permissions import IsCompanyOwner
+from .documents import JobDocument
 from .filters import JobFilter
 from companies.models import Company
 
@@ -65,3 +68,35 @@ class JobListView(generics.ListAPIView):
     ]
 
     ordering = ["-created_at"]
+
+
+class JobSearchView(APIView):
+    """
+    Full-text search using Elasticsearch.
+    Searches in:
+    - title
+    - description
+    - skills
+    """
+
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        query = request.GET.get("q", None)
+
+        if not query:
+            return Response({"error": "Search query parameter 'q' required"}, status=400)
+
+        search = JobDocument.search().query(
+            "multi_match",
+            query=query,
+            fields=["title", "description", "skills"],
+        )
+
+        response = search.execute()
+
+        results = [hit.meta.id for hit in response]
+        jobs = JobDocument.get_queryset().filter(id__in=results)
+
+        serializer = JobSerializer(jobs, many=True)
+        return Response(serializer.data)

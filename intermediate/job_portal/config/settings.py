@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "django_filters",
     'drf_spectacular',
+    "django_elasticsearch_dsl",
 
     # Local apps
     "accounts",
@@ -51,6 +52,16 @@ INSTALLED_APPS = [
     "jobs",
     "applications",
 ]
+
+ELASTICSEARCH_DSL = {
+    "default": {
+        "hosts": "http://elasticsearch:9200",  # docker service name
+    },
+}
+
+# Auto-sync DB changes to Elasticsearch
+ELASTICSEARCH_DSL_AUTOSYNC = True
+ELASTICSEARCH_DSL_SIGNAL_PROCESSOR = "django_elasticsearch_dsl.signals.RealTimeSignalProcessor"
 
 AUTH_USER_MODEL = "accounts.User"
 
