@@ -23,7 +23,7 @@ class Job(models.Model):
     description = models.TextField()
 
     # Skills stored as comma-separated text (can later improve to M2M)
-    skills_required = models.CharField(max_length=500)
+    skills = models.CharField(max_length=500)
 
     location = models.CharField(max_length=255)
 
