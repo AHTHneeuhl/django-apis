@@ -7,6 +7,7 @@ from typing import List, Optional
 
 from ..database import get_db
 from .. import models, schemas
+from ..auth import get_current_user
 
 router = APIRouter(prefix="/transactions", tags=["Transactions"])
 
@@ -15,33 +16,41 @@ router = APIRouter(prefix="/transactions", tags=["Transactions"])
 @router.post("/", response_model=schemas.TransactionResponse)
 def create_transaction(
     transaction: schemas.TransactionCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
 ):
-    db_transaction = models.Transaction(**transaction.model_dump())
+    db_transaction = models.Transaction(
+        **transaction.model_dump(),
+        user_id=current_user.id
+    )
 
     db.add(db_transaction)
     db.commit()
     db.refresh(db_transaction)
 
-    return db_transaction
+    return db_transaction.filter(models.Transaction.user_id == current_user.id).first()
 
 
 # 📄 Get All Transactions
 @router.get("/", response_model=List[schemas.TransactionResponse])
 def get_transactions(
-    type: Optional[str] = None,
-    category: Optional[str] = None,
+    type: Optional[schemas.TransactionType] = None,
+    category_id: Optional[int] = None,
     start_date: Optional[datetime] = None,
     end_date: Optional[datetime] = None,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
 ):
-    query = db.query(models.Transaction)
+    # Always restrict to current user
+    query = db.query(models.Transaction).filter(
+        models.Transaction.user_id == current_user.id
+    )
 
     if type:
         query = query.filter(models.Transaction.type == type)
 
-    if category:
-        query = query.filter(models.Transaction.category == category)
+    if category_id:
+        query = query.filter(models.Transaction.category_id == category_id)
 
     if start_date:
         query = query.filter(models.Transaction.created_at >= start_date)
