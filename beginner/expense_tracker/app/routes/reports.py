@@ -1,8 +1,12 @@
 # app/routes/reports.py
 
+import pandas as pd
 from fastapi import APIRouter, Depends
+from fastapi.responses import StreamingResponse
+from io import StringIO
 from sqlalchemy.orm import Session
 from sqlalchemy import func, extract
+from datetime import datetime
 from ..database import get_db
 from .. import models
 
@@ -67,3 +71,57 @@ def monthly_chart(year: int, db: Session = Depends(get_db)):
         "year": year,
         "data": monthly_data
     }
+
+
+@router.get("/export-csv")
+def export_csv(
+    type: str = None,
+    category: str = None,
+    start_date: datetime = None,
+    end_date: datetime = None,
+    db: Session = Depends(get_db)
+):
+    query = db.query(models.Transaction)
+
+    # Apply filters if provided
+    if type:
+        query = query.filter(models.Transaction.type == type)
+
+    if category:
+        query = query.filter(models.Transaction.category == category)
+
+    if start_date:
+        query = query.filter(models.Transaction.created_at >= start_date)
+
+    if end_date:
+        query = query.filter(models.Transaction.created_at <= end_date)
+
+    transactions = query.all()
+
+    # Convert to list of dicts
+    data = [
+        {
+            "id": t.id,
+            "title": t.title,
+            "amount": t.amount,
+            "type": t.type,
+            "category": t.category,
+            "created_at": t.created_at
+        }
+        for t in transactions
+    ]
+
+    # Convert to DataFrame
+    df = pd.DataFrame(data)
+
+    # Write to CSV in memory
+    stream = StringIO()
+    df.to_csv(stream, index=False)
+    stream.seek(0)
+
+    # Return as downloadable file
+    return StreamingResponse(
+        stream,
+        media_type="text/csv",
+        headers={"Content-Disposition": "attachment; filename=transactions.csv"}
+    )
