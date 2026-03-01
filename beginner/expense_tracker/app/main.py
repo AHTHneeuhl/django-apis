@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from .database import Base, engine
-from .routes import transactions
+from .routes import transactions, reports
 
 app = FastAPI(
     title="Expense Tracker API",
@@ -11,6 +11,7 @@ app = FastAPI(
 Base.metadata.create_all(bind=engine)
 
 app.include_router(transactions.router)
+app.include_router(reports.router)
 
 @app.get("/")
 def root():
