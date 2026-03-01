@@ -3,6 +3,7 @@
 from pydantic import BaseModel
 from datetime import datetime
 from typing import Optional
+from enum import Enum
 
 
 class TransactionCreate(BaseModel):
@@ -12,11 +13,16 @@ class TransactionCreate(BaseModel):
     category: Optional[str] = None
 
 
+class TransactionType(str, Enum):
+    income = "income"
+    expense = "expense"
+
+
 class TransactionResponse(BaseModel):
     id: int
     title: str
     amount: float
-    type: str
+    type: TransactionType
     category: Optional[str]
     created_at: datetime
 
