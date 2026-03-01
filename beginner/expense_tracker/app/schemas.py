@@ -10,7 +10,7 @@ class TransactionCreate(BaseModel):
     title: str
     amount: float
     type: str
-    category: Optional[str] = None
+    category_id: int
 
 
 class TransactionType(str, Enum):
@@ -18,13 +18,25 @@ class TransactionType(str, Enum):
     expense = "expense"
 
 
+class CategoryCreate(BaseModel):
+    name: str
+
+
+class CategoryResponse(BaseModel):
+    id: int
+    name: str
+
+    class Config:
+        from_attributes = True
+
+
 class TransactionResponse(BaseModel):
     id: int
     title: str
     amount: float
     type: TransactionType
-    category: Optional[str]
     created_at: datetime
+    CategoryResponse
 
     class Config:
         from_attributes = True  # For SQLAlchemy (Pydantic v2)
