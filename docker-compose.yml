@@ -1,0 +1,75 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: backend_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: backend_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    container_name: backend_redis
+    ports:
+      - "6379:6379"
+
+  blog:
+    build: ./blog
+    container_name: blog_api
+    ports:
+      - "8001:8000"
+    depends_on:
+      - postgres
+      - redis
+
+  ecommerce:
+    build: ./ecommerce
+    container_name: ecommerce_api
+    ports:
+      - "8002:8000"
+    depends_on:
+      - postgres
+      - redis
+
+  expense_tracker:
+    build: ./expense_tracker
+    container_name: expense_tracker_api
+    ports:
+      - "8003:8000"
+    depends_on:
+      - postgres
+      - redis
+
+  job_portal:
+    build: ./job_portal
+    container_name: job_portal_api
+    ports:
+      - "8004:8000"
+    depends_on:
+      - postgres
+      - redis
+
+  social_media:
+    build: ./social_media
+    container_name: social_media_api
+    ports:
+      - "8005:8000"
+    depends_on:
+      - postgres
+      - redis
+
+  task_manager:
+    build: ./task_manager
+    container_name: task_manager_api
+    ports:
+      - "8006:8000"
+    depends_on:
+      - postgres
+      - redis
+
+volumes:
+  postgres_data:
