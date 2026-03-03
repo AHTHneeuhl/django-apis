@@ -2,11 +2,22 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-COPY pyproject.toml uv.lock ./
+# Install curl (needed to install uv)
+RUN apt-get update && apt-get install -y curl
 
-RUN pip install uv
-RUN uv sync
+# Install uv
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+ENV PATH="/root/.local/bin:$PATH"
 
-COPY . .
+# Copy dependency files from root
+COPY pyproject.toml uv.lock /app/
 
-CMD ["uv", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Install dependencies using uv
+RUN uv sync --frozen
+
+# Copy project files
+COPY . /app
+
+EXPOSE 8000
+
+CMD ["uv", "run", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
